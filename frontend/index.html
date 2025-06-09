@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Chatbot</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+    .chat-box { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; margin-bottom: 10px; }
+    .chat-msg { margin: 5px 0; }
+    .bot { color: green; }
+    .user { color: blue; }
+  </style>
+</head>
+<body>
+  <h2>Chat with ShopBot 🤖</h2>
+  <div class="chat-box" id="chat"></div>
+  <input type="text" id="userInput" placeholder="Ask for a product..." style="width:80%;">
+  <button onclick="sendQuery()">Send</button>
+  <button onclick="resetChat()">Reset</button>
+
+  <script>
+    function appendMessage(text, sender) {
+      const chat = document.getElementById('chat');
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg ' + sender;
+      msg.textContent = `${sender === 'user' ? 'You' : 'Bot'}: ${text}`;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendQuery() {
+      const input = document.getElementById('userInput');
+      const query = input.value.trim();
+      if (!query) return;
+      appendMessage(query, 'user');
+      input.value = '';
+
+      const res = await fetch('http://127.0.0.1:5000/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query })
+      });
+
+      const products = await res.json();
+      if (products.length === 0) {
+        appendMessage('No products found.', 'bot');
+      } else {
+        appendMessage(`Found ${products.length} products:`, 'bot');
+        products.forEach(p => appendMessage(`${p.name} - ₹${p.price}`, 'bot'));
+      }
+    }
+
+    function resetChat() {
+      document.getElementById('chat').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
