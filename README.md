@@ -56,3 +56,7 @@ cd ecommerce-chatbot
 You: product 15
 Bot: Found 1 products:
 Bot: Product 15 - ₹48.23
+
+
+Project sample image
+![Screenshot (126)](https://github.com/user-attachments/assets/5e973a45-3eb7-425f-8e88-75613236ae3f)
